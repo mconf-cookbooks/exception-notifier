@@ -18,7 +18,7 @@ version          '0.0.1'
   supports os
 end
 
-depends 'fluentd', '>= 0.0'
+depends 'fluentd', '>= 0.0.6'
 # requires fork 'https://github.com/mconf-cookbooks/fluentd-cookbook'
 
 recipe 'exception-notifier::default', 'Installs fluentd to parse logs and notify in cases of exceptions'
