@@ -67,3 +67,10 @@ Include `exception-notifier` in your node's `run_list` along with the required a
   ]
 }
 ```
+
+ToDo
+-----
+
+* Allow the configuration of `format1`, `format2`, `format3`, etc., in sources.
+* The error set in the subject is taken from the first regex specified in `matches`,
+but the emails could be configured individually for each regex in the list.
