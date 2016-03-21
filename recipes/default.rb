@@ -121,3 +121,14 @@ node['exception-notifier']['matches'].each do |match|
     notifies :restart, "service[fluent]", :delayed
   end
 end
+
+# Logrotate
+logrotate_app 'fluentd' do
+  cookbook 'logrotate'
+  path ["#{node['exception-notifier']['fluentd']['log_path']}/*.log"]
+  options ['missingok', 'compress', 'copytruncate', 'notifempty', 'dateext']
+  frequency node['exception-notifier']['logrotate']['frequency']
+  rotate node['exception-notifier']['logrotate']['rotate']
+  size node['exception-notifier']['logrotate']['size']
+  create "644 #{node['exception-notifier']['fluentd']['user']} #{node['exception-notifier']['fluentd']['group']}"
+end
