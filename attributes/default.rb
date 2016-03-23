@@ -5,6 +5,7 @@
 default['exception-notifier']['sources']            = []
 default['exception-notifier']['matches']            = []
 default['exception-notifier']['smtp']               = {}
+default['exception-notifier']['send_notifications'] = true
 default['exception-notifier']['fluentd']['user']    = node['fluentd']['user'] || 'fluent'
 default['exception-notifier']['fluentd']['group']   = node['fluentd']['group'] || 'fluent'
 default['exception-notifier']['fluentd']['log_path'] = "/var/log/fluent"

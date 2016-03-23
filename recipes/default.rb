@@ -86,39 +86,41 @@ node['exception-notifier']['matches'].each do |match|
   end
 
   # a new match file with the configurations to send emails
-  smtp = node["exception-notifier"]["smtp"]
-  attrs = {
-    "match" => "exception.#{match['tag']}",
-    "type" => "copy",
-    "store" => [
-      {
-        "type" => "stdout"
-      },
-      {
-        "type" => "mail",
-        "host" => smtp["host"],
-        "port" => smtp["port"],
-        "user" => smtp["user"],
-        "password" => smtp["password"],
-        "enable_starttls_auto" => smtp["enable_starttls_auto"],
-        "from" => smtp["from"],
-        "to" => smtp["to"],
-        "subject" => smtp["subject"] ? "'#{smtp["subject"]}'" : "'[%s] Exception: %s'",
-        "subject_out_keys" => "hostname,subject_line",
-        "message" => "%s",
-        "message_out_keys" => match['message_key']
-      }
-    ]
-  }
-  template match['tag'] do
-    cookbook "fluentd"
-    path     "/etc/fluent/config.d/#{match['tag']}_smtp.conf"
-    owner    node['exception-notifier']['fluentd']['user']
-    group    node['exception-notifier']['fluentd']['group']
-    helpers(Fluentd::Helpers)
-    source   "plugin_match.conf.erb"
-    variables({ :match => attrs.delete('match'), :attributes => attrs })
-    notifies :restart, "service[fluent]", :delayed
+  if node["exception-notifier"]["send_notifications"]
+    smtp = node["exception-notifier"]["smtp"]
+    attrs = {
+      "match" => "exception.#{match['tag']}",
+      "type" => "copy",
+      "store" => [
+        {
+          "type" => "stdout"
+        },
+        {
+          "type" => "mail",
+          "host" => smtp["host"],
+          "port" => smtp["port"],
+          "user" => smtp["user"],
+          "password" => smtp["password"],
+          "enable_starttls_auto" => smtp["enable_starttls_auto"],
+          "from" => smtp["from"],
+          "to" => smtp["to"],
+          "subject" => smtp["subject"] ? "'#{smtp["subject"]}'" : "'[%s] Exception: %s'",
+          "subject_out_keys" => "hostname,subject_line",
+          "message" => "%s",
+          "message_out_keys" => match['message_key']
+        }
+      ]
+    }
+    template match['tag'] do
+      cookbook "fluentd"
+      path     "/etc/fluent/config.d/#{match['tag']}_smtp.conf"
+      owner    node['exception-notifier']['fluentd']['user']
+      group    node['exception-notifier']['fluentd']['group']
+      helpers(Fluentd::Helpers)
+      source   "plugin_match.conf.erb"
+      variables({ :match => attrs.delete('match'), :attributes => attrs })
+      notifies :restart, "service[fluent]", :delayed
+    end
   end
 end
 
