@@ -66,7 +66,7 @@ node['exception-notifier']['matches'].each do |match|
     "record" => [
       {
         "tag" => "${tag}",
-        "hostname" => "${hostname}"
+        "hostname" => "${Socket.gethostname}"
       }
     ]
   }
